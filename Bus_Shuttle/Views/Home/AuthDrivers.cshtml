@@ -1,0 +1,32 @@
+@model List<DomainModel.DomainModel.User>
+
+<h2>Unauthorized Drivers</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>User Name</th>
+            <th>Set Authorized</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var driver in Model)
+        {
+            <tr>
+                <td>@driver.Id</td>
+                <td>@driver.FirstName</td>
+                <td>@driver.LastName</td>
+                <td>@driver.UserName</td>
+                <td>
+                    <form asp-controller="Home" asp-action="SetAuthorized" method="post">
+                        <input type="hidden" name="userId" value="@driver.Id" />
+                        <button type="submit" class="btn btn-primary">Set Authorized</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

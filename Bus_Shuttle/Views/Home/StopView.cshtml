@@ -1,0 +1,46 @@
+@model IEnumerable<Bus_Shuttle.Models.StopModels.StopViewModel>
+@{
+    ViewData["Title"] = "Stop List";
+}
+<h2>Stop List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Latitude)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Longitude)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Latitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Longitude)
+                </td>
+                <td>
+                    <a asp-action="StopEdit" asp-route-id="@item.Id">Edit</a> | <form asp-action="StopDelete"
+                        asp-route-id="@item.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this?');">Delete</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="StopCreate">Create a new Stop</a>

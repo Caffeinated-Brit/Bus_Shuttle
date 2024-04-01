@@ -1,0 +1,34 @@
+@model IEnumerable<Bus_Shuttle.Models.BusModels.BusViewModel>
+@{
+    ViewData["Title"] = "Bus List";
+}
+<h2>Bus List</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BusNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BusNumber)
+                </td>
+                <td>
+                    <a asp-action="BusEdit" asp-route-id="@item.Id">Edit</a> | <form asp-action="BusDelete"
+                        asp-route-id="@item.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Are you sure you want to delete this?');">Delete</button>
+                    </form>
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="BusCreate">Create a new Bus</a>

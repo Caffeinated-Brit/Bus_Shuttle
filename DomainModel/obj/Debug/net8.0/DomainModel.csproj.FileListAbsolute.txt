@@ -20,3 +20,4 @@ C:\Users\almon\RiderProjects\Bus_Shuttle\DomainModel\obj\Debug\net8.0\DomainMode
 C:\Users\almon\RiderProjects\Bus_Shuttle\DomainModel\obj\Debug\net8.0\refint\DomainModel.dll
 C:\Users\almon\RiderProjects\Bus_Shuttle\DomainModel\obj\Debug\net8.0\DomainModel.pdb
 C:\Users\almon\RiderProjects\Bus_Shuttle\DomainModel\obj\Debug\net8.0\ref\DomainModel.dll
+C:\Users\almon\RiderProjects\Bus_Shuttle\DomainModel\obj\Debug\net8.0\DomainModel.sourcelink.json

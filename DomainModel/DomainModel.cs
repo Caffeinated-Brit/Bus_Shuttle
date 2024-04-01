@@ -19,29 +19,6 @@ public class DomainModel
         }
     }
     
-    public class Driver
-    {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        
-        public bool IsAuthorizedDriver { get; set; }
-        
-
-        public Driver(int id, string firstname, string lastname)
-        {
-            Id = id;
-            FirstName = firstname;
-            LastName = lastname;
-        }
-
-        public void Update(string firstname, string lastname)
-        {
-            FirstName = firstname;
-            LastName = lastname;
-        }
-    }
-    
     public class Entry
     {
         public int Id { get; set; }
@@ -129,6 +106,10 @@ public class DomainModel
         public string LastName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public bool IsManager { get; set; }
+        public bool IsDriver { get; set; }
+        public bool IsAuthorizedDriver { get; set; }
+        
         public User()
         {
         }
@@ -139,14 +120,20 @@ public class DomainModel
             LastName = lastname;
             UserName = username;
             Password = password;
+            IsManager = false;
+            IsDriver = false;
+            IsAuthorizedDriver = false;
         }
 
-        public void Update(string firstname, string lastname, string username, string password)
+        public void Update(string firstname, string lastname, string username, string password, bool isManager, bool isDriver, bool isAuthorizedDriver)
         {
             FirstName = firstname;
             LastName = lastname;
             UserName = username;
             Password = password;
+            IsManager = isManager;
+            IsDriver = isDriver;
+            IsAuthorizedDriver = isAuthorizedDriver;
         }
     }
     

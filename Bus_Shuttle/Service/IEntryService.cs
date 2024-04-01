@@ -1,7 +1,7 @@
 using DomainModel;
 namespace Bus_Shuttle.Service;
 
-public interface EntryServiceInterface
+public interface IEntryService
 {
     List<DomainModel.DomainModel.Entry> GetEntries();
     void UpdateEntryByID(int id, DateTime timeStamp, int boarded, int leftBehind);

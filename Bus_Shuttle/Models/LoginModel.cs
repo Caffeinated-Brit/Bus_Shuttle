@@ -16,7 +16,5 @@ public class LoginModel
     public bool IsManager { get; set; }
     
     public bool IsDriver { get; set; }
-
-    //[Display(Name = "Remember Me")]
-    //public bool RememberMe { get; set; }
+    
 }

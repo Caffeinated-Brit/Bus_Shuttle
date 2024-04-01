@@ -127,3 +127,4 @@ C:\Users\almon\RiderProjects\Bus_Shuttle\Bus_Shuttle\obj\Debug\net8.0\refint\Bus
 C:\Users\almon\RiderProjects\Bus_Shuttle\Bus_Shuttle\obj\Debug\net8.0\Bus_Shuttle.pdb
 C:\Users\almon\RiderProjects\Bus_Shuttle\Bus_Shuttle\obj\Debug\net8.0\Bus_Shuttle.genruntimeconfig.cache
 C:\Users\almon\RiderProjects\Bus_Shuttle\Bus_Shuttle\obj\Debug\net8.0\ref\Bus_Shuttle.dll
+C:\Users\almon\RiderProjects\Bus_Shuttle\bus_shuttle\obj\Debug\net8.0\Bus_Shuttle.sourcelink.json

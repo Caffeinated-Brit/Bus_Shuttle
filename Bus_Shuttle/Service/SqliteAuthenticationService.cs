@@ -23,17 +23,6 @@ public class SqliteAuthenticationService : IMyAuthenticationService
         Console.WriteLine("Name: " + user.UserName);
         Console.WriteLine("Password: " + user.Password);
         
-        // Log all usernames and passwords for debugging purposes
-        /*
-        var allUsers = await _dbContext.User.ToListAsync();
-        StringBuilder sb = new StringBuilder();
-        sb.AppendLine("All usernames and passwords:");
-        foreach (var u in allUsers)
-        {
-            sb.AppendLine($"Username: {u.UserName}, Password: {u.Password}");
-        }
-        Console.WriteLine(sb.ToString());
-        */
 
         // Find the user by username
         var dbUser = await _dbContext.User.FirstOrDefaultAsync(u => u.UserName == user.UserName);
@@ -50,8 +39,6 @@ public class SqliteAuthenticationService : IMyAuthenticationService
 
     private bool VerifyPassword(string enteredPassword, string storedPassword)
     {
-        // Implement your password verification logic here
-        // For demonstration purposes, let's assume plain text comparison
         return enteredPassword == storedPassword;
     }
     

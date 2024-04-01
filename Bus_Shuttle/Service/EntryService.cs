@@ -6,7 +6,7 @@ using Microsoft.VisualBasic;
 using Bus_Shuttle.Database;
 namespace Bus_Shuttle.Service
 {
-    public class EntryService : EntryServiceInterface
+    public class EntryService : IEntryService
     {
         private readonly BusDb _busDb;
 

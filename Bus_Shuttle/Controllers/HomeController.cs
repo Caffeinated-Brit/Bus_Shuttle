@@ -21,11 +21,11 @@ public class HomeController : Controller
     private readonly IUserService _userService;
     private readonly IBusService _busService;
     private readonly ILoopService _loopService;
-    private readonly EntryServiceInterface _entryService;
+    private readonly IEntryService _entryService;
     private readonly IRouteService _routeService;
     private readonly IStopService _stopService;
 
-    public HomeController(ILogger<HomeController> logger, IBusService busService, ILoopService loopService, EntryServiceInterface entryService, IRouteService routeService, IStopService stopService, IUserService userService)
+    public HomeController(ILogger<HomeController> logger, IBusService busService, ILoopService loopService, IEntryService entryService, IRouteService routeService, IStopService stopService, IUserService userService)
     {
         _logger = logger;
         _busService = busService;
@@ -54,6 +54,48 @@ public class HomeController : Controller
         return View(drivers);
     }
     
+    [HttpGet]
+    public IActionResult DriverEdit(int id)
+    {
+        var user = _userService.FindUserByID(id);
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        var model = new UserEditModel
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            UserName = user.UserName,
+            //Password = user.Password,
+            //IsManager = user.IsManager,
+            //IsDriver = user.IsDriver,
+            //IsAuthorizedDriver = user.IsAuthorizedDriver
+            
+        };
+
+        return View(model);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult DriverEdit(UserEditModel model)
+    {
+        _userService.UpdateUserById(model.Id, model.FirstName, model.LastName, model.UserName);
+        return RedirectToAction("ViewDrivers");
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult DeleteDriver(int id)
+    {
+        // Call the service method to delete the user
+        _userService.DeleteUserById(id);
+    
+        // Redirect back to the ViewDrivers page
+        return RedirectToAction("ViewDrivers");
+    }
     
     [HttpPost]
     public IActionResult SetAuthorized(int userId)

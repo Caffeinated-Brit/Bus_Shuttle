@@ -23,10 +23,11 @@ public class Program
         builder.Services.AddDbContext<BusDb>(Options => Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
         builder.Services.AddScoped<IBusService, BusService>();
         builder.Services.AddScoped<ILoopService, LoopService>();
-        builder.Services.AddScoped<EntryServiceInterface, EntryService>();
+        builder.Services.AddScoped<IEntryService, EntryService>();
         builder.Services.AddScoped<IRouteService, RouteService>();
         builder.Services.AddScoped<IStopService, StopService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<IMyAuthenticationService, SqliteAuthenticationService>(); 
         
         
          builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -37,9 +38,6 @@ public class Program
                 options.LogoutPath = "/Home/Logout"; 
                 options.ReturnUrlParameter = "returnUrl"; 
             });
-        
-        
-        builder.Services.AddScoped<IMyAuthenticationService, SqliteAuthenticationService>(); 
         
         
 
@@ -61,7 +59,6 @@ public class Program
         app.UseMiddleware<MyAuthentication>();
         app.UseAuthentication();
         app.UseAuthorization();
-        
         
         //TESTING ONLY
         app.Use(async (context, next) =>

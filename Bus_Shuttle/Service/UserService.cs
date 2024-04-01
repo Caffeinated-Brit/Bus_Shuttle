@@ -81,8 +81,7 @@ namespace Bus_Shuttle.Service
             
 
         }
-
-
+        
         public DomainModel.DomainModel.User? FindUserByID(int id)
         {
             var user = _busDb.User.FirstOrDefault(u => u.Id == id);
@@ -91,6 +90,43 @@ namespace Bus_Shuttle.Service
                 return new DomainModel.DomainModel.User(user.Id, user.FirstName, user.LastName, user.UserName, user.Password);
             }
             return null;
+        }
+        
+        public DomainModel.DomainModel.User? FindUserByUserName(string userName)
+        {
+            var user = _busDb.User.FirstOrDefault(u => u.UserName == userName);
+            if (user != null)
+            {
+                return new DomainModel.DomainModel.User(user.Id, user.FirstName, user.LastName, user.UserName, user.Password);
+            }
+            return null;
+        }
+        
+        public void UpdateUserById(int userId, string firstname, string lastname, string userName)
+        {
+            var user = _busDb.User.Find(userId);
+            Console.WriteLine(user);
+            if (user != null)
+            {
+                user.FirstName = firstname;
+                user.LastName = lastname;
+                user.UserName = userName;
+                //user.Password = password;
+                //user.IsManager = isManager;
+                //user.IsDriver = isDriver;
+                //user.IsAuthorizedDriver = isAuthorizedDriver;
+                _busDb.SaveChanges();
+            }
+        }
+        
+        public void DeleteUserById(int userId)
+        {
+            var user = _busDb.User.Find(userId);
+            if (user != null)
+            {
+                _busDb.User.Remove(user);
+                _busDb.SaveChanges();
+            }
         }
     }
 }

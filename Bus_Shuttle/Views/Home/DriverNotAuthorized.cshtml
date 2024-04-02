@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unauthorized</title>
+    <style>
+    h1 {
+    font-size: 36px;
+    color: #555;
+}
+p {
+    font-size: 18px;
+    color: #777;
+}
+</style>
+    </head>
+    <body>
+
+    <h1>Unauthorized</h1>
+    <p>Please contact your manager for authorization.</p>
+    <form method="post" asp-action="Logout" class="d-inline">
+    <button type="submit" class="btn btn-danger">Logout</button>
+    @Html.AntiForgeryToken() 
+    </form>
+    
+    </body>
+    </html>

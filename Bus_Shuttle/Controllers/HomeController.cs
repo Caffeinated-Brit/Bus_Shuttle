@@ -35,25 +35,50 @@ public class HomeController : Controller
         _stopService = stopService;
         _userService = userService;
     }
-
+    
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult Index()
     {
         return View();
     }
+    
+    [Authorize(Policy = "ReqDriver")]
+    public IActionResult DriverTempPage()
+    {
+        return View();
+    }
+    
+    [HttpGet]
+    public IActionResult AccessDenied()
+    {
+        return View();
+    }
+    
+    
+    [HttpGet]
+    [AllowAnonymous]
+    public IActionResult DriverNotAuthorized()
+    {
+        return View();
+    }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult AuthDrivers()
     {
         var drivers = _userService.GetUnauthorizedDrivers();
         return View(drivers);
     }
 
-    
+    [Authorize(Policy = "ReqManager")]
+    [HttpGet]
     public IActionResult ViewDrivers()
     {
         var drivers = _userService.GetDrivers();
         return View(drivers);
     }
     
+    [Authorize(Policy = "ReqManager")]
     [HttpGet]
     public IActionResult DriverEdit(int id)
     {
@@ -78,6 +103,7 @@ public class HomeController : Controller
         return View(model);
     }
     
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DriverEdit(UserEditModel model)
@@ -86,6 +112,7 @@ public class HomeController : Controller
         return RedirectToAction("ViewDrivers");
     }
     
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteDriver(int id)
@@ -97,6 +124,7 @@ public class HomeController : Controller
         return RedirectToAction("ViewDrivers");
     }
     
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     public IActionResult SetAuthorized(int userId)
     {
@@ -104,13 +132,13 @@ public class HomeController : Controller
         return RedirectToAction("AuthDrivers");
     }
     
-    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult BusView()
     {
         return View(_busService.GetBusses().Select(b => BusModels.BusViewModel.FromBus(b)));
     }
     
-    
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult BusDelete(int id)
@@ -124,7 +152,7 @@ public class HomeController : Controller
         
     }
     
-    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult BusEdit([FromRoute] int id)
     {
         var bus = _busService.FindBusByID(id);
@@ -132,6 +160,7 @@ public class HomeController : Controller
         return View(busEditModel);
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> BusEdit(int id, [Bind("BusNumber")] BusModels.BusEditModel bus)
@@ -145,12 +174,13 @@ public class HomeController : Controller
         
     }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult BusCreate()
     {
         return View();
     }
 
-
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> BusCreate([Bind("BusNumber")] BusModels.BusCreateModel bus)
@@ -164,6 +194,7 @@ public class HomeController : Controller
         
     }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult EntryView()
     {
 
@@ -171,6 +202,7 @@ public class HomeController : Controller
 
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult EntryDelete(int id)
@@ -184,6 +216,7 @@ public class HomeController : Controller
         
     }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult EntryEdit([FromRoute] int id)
     {
         var entry = _entryService.FindEntryByID(id);
@@ -191,6 +224,7 @@ public class HomeController : Controller
         return View(entryEditModel);
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EntryEdit(int id, [Bind("TimeStamp, Boarded, LeftBehind")] EntryModels.EntryEditModel entry)
@@ -203,12 +237,13 @@ public class HomeController : Controller
         return View(entry);
     }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult EntryCreate()
     {
         return View();
     }
 
-
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> EntryCreate([Bind("TimeStamp, Boarded, LeftBehind")] EntryModels.EntryCreateModel entry)
@@ -222,14 +257,13 @@ public class HomeController : Controller
         
     }
 
-    //Loop
+    [Authorize(Policy = "ReqManager")]
     public IActionResult LoopView()
     {
-
         return View(_loopService.GetLoops().Select(l => LoopModels.LoopViewModel.FromLoop(l)));
-
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult LoopDelete(int id)
@@ -242,6 +276,7 @@ public class HomeController : Controller
         return RedirectToAction("LoopView");
         
     }
+    [Authorize(Policy = "ReqManager")]
     public IActionResult LoopEdit([FromRoute] int id)
     {
         var loop = _loopService.FindLoopByID(id);
@@ -249,6 +284,7 @@ public class HomeController : Controller
         return View(loopEditModel);
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> LoopEdit(int id, [Bind("Name")] LoopModels.LoopEditModel loop)
@@ -261,13 +297,14 @@ public class HomeController : Controller
         return View(loop);
         
     }
-
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult LoopCreate()
     {
         return View();
     }
 
-
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> LoopCreate([Bind("Name")] LoopModels.LoopCreateModel loop)
@@ -281,17 +318,15 @@ public class HomeController : Controller
         
     }
 
-
-
-    //Route
-
+    [Authorize(Policy = "ReqManager")]
     public IActionResult RouteView()
     {
 
         return View(_routeService.GetRoutes().Select(r => RouteModels.RouteViewModel.FromRoute(r)));
 
     }
-
+    
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult RouteDelete(int id)
@@ -304,6 +339,8 @@ public class HomeController : Controller
         return RedirectToAction("RouteView");
         
     }
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult RouteEdit([FromRoute] int id)
     {
         var route = _routeService.FindRouteByID(id);
@@ -311,6 +348,7 @@ public class HomeController : Controller
         return View(routeEditModel);
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RouteEdit(int id, [Bind("Order")] RouteModels.RouteEditModel route)
@@ -325,12 +363,13 @@ public class HomeController : Controller
         
     }
 
+    [Authorize(Policy = "ReqManager")]
     public IActionResult RouteCreate()
     {
         return View();
     }
 
-
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RouteCreate([Bind("Order")] RouteModels.RouteCreateModel route)
@@ -342,17 +381,14 @@ public class HomeController : Controller
         }
         return View();
     }
-
-
-    //Stop
-
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult StopView()
     {
-
         return View(_stopService.GetStops().Select(s => StopModels.StopViewModel.FromStop(s)));
-
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult StopDelete(int id)
@@ -365,6 +401,8 @@ public class HomeController : Controller
         return RedirectToAction("StopView");
         
     }
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult StopEdit([FromRoute] int id)
     {
         var stop = _stopService.FindStopByID(id);
@@ -372,6 +410,7 @@ public class HomeController : Controller
         return View(stopEditModel);
     }
 
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> StopEdit(int id, [Bind("Name, Latitude, Longitude")] StopModels.StopEditModel stop)
@@ -382,15 +421,15 @@ public class HomeController : Controller
             return RedirectToAction("StopView");
         }
         return View(stop);
-        
     }
-
+    
+    [Authorize(Policy = "ReqManager")]
     public IActionResult StopCreate()
     {
         return View();
     }
 
-
+    [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> StopCreate([Bind("Name, Latitude, Longitude")] StopModels.StopCreateModel stop)
@@ -403,23 +442,23 @@ public class HomeController : Controller
         return View();
 
     }
-
-    //Login
+    
     
     [AllowAnonymous]
     [HttpGet]
     public IActionResult LoginView()
-        {
-            return View();
-        }
+    
+    {
+        return View();
+    }
 
     
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Logout()
+    {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        return RedirectToAction("Index", "Home");
     }
     
     

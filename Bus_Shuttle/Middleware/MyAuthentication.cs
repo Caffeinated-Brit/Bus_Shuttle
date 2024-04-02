@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Bus_Shuttle.Database;
 using Bus_Shuttle.Service;
 
+
 namespace Bus_Shuttle.Middleware
 {
     public class MyAuthentication
@@ -36,34 +37,86 @@ namespace Bus_Shuttle.Middleware
 
             if (isAuthenticated)
             {
+                Console.WriteLine("User Authenticated");
                 var user = dbContext.User.FirstOrDefault(u => u.UserName == username);
-                
-                //TODO: this here is where redirection for managers and drives will take place, as there are no driver pages yet this is not implemented
-                
-                if (user != null && (user.IsAuthorizedDriver || user.IsManager))
+
+                if (user != null)
                 {
-                    Console.WriteLine("Is manager or authorized driver");
-                    
-                    var claims = new[]
+                    if (user.IsManager)
                     {
-                        new Claim(ClaimTypes.Name, username),
+                        var claims = new[]
+                        {
+                            new Claim(ClaimTypes.Name, username),
+                            new Claim(ClaimTypes.Role, "Manager")
+                        };
                         
-                    };
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                    var identity = new ClaimsIdentity(claims, "CustomAuthentication");
-
-                    var authProperties = new AuthenticationProperties
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        };
+                        await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
+                        context.Response.Redirect("/Home/Index");
+                        return;
+                    }
+                    
+                    if (user.IsDriver && user.IsAuthorizedDriver)
                     {
-                        IsPersistent = true
-                    };
-                    await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
-                    context.Response.Redirect("/Home/Index");
-                    return;
+                        var claims = new[]
+                        {
+                            new Claim(ClaimTypes.Name, username),
+                            new Claim(ClaimTypes.Role, "Driver")
+                        };
+                        
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        };
+                        await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
+                        context.Response.Redirect("/Home/DriverTempPage");
+                        
+                        
+                        
+                        foreach (var claim in identity.Claims)
+                        {
+                            Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");
+                        }
+
+
+                        
+                        return;
+                    }
+
+                    if (user is { IsDriver: true, IsAuthorizedDriver: false })
+                    {
+                        Console.WriteLine("Is driver but not authorized");
+                        var claims = new[]
+                        {
+                            new Claim(ClaimTypes.Name, username),
+                        };
+                        
+                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+                        var authProperties = new AuthenticationProperties
+                        {
+                            IsPersistent = true
+                        };
+                        await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
+                        context.Response.Redirect("/Home/DriverNotAuthorized");
+                    }
+                }
+
+                if (user == null)
+                {
+                    context.Response.Redirect("/Home/LoginView");
                 }
 
             }
-
             await _next(context); 
+            
             } 
         }
 }

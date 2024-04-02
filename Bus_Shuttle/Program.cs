@@ -38,6 +38,18 @@ public class Program
                 options.LogoutPath = "/Home/Logout"; 
                 options.ReturnUrlParameter = "returnUrl"; 
             });
+         
+         builder.Services.AddAuthorization(options =>
+         {
+             options.AddPolicy("ReqManager", policy =>
+                 policy.RequireRole("Manager"));
+         });
+         
+         builder.Services.AddAuthorization(options =>
+         {
+             options.AddPolicy("ReqDriver", policy =>
+                 policy.RequireRole("Driver"));
+         });
         
         
 
@@ -56,8 +68,9 @@ public class Program
 
         
         app.UseRouting();
-        app.UseMiddleware<MyAuthentication>();
+        //app.UseMiddleware<MyAuthentication>();
         app.UseAuthentication();
+        app.UseMiddleware<MyAuthentication>();
         app.UseAuthorization();
         
         //TESTING ONLY

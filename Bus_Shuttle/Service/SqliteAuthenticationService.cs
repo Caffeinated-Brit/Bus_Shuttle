@@ -23,17 +23,14 @@ public class SqliteAuthenticationService : IMyAuthenticationService
         Console.WriteLine("Name: " + user.UserName);
         Console.WriteLine("Password: " + user.Password);
         
-
-        // Find the user by username
+        
         var dbUser = await _dbContext.User.FirstOrDefaultAsync(u => u.UserName == user.UserName);
-
-        // If user not found, or passwords don't match, return false
+        
         if (dbUser == null || !VerifyPassword(user.Password, dbUser.Password))
         {
             return false;
         }
-
-        // User found and passwords match
+        
         return true;
     }
 

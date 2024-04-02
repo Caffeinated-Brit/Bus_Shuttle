@@ -18,6 +18,10 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\almon\RiderProjects\Bus_Shuttle\bus_shuttle
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/AccessDenied.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBY2Nlc3NEZW5pZWQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/AuthDrivers.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxBdXRoRHJpdmVycy5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -36,6 +40,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/DriverEdit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEcml2ZXJFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/DriverNotAuthorized.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEcml2ZXJOb3RBdXRob3JpemVkLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/DriverTempPage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxEcml2ZXJUZW1wUGFnZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/almon/RiderProjects/Bus_Shuttle/bus_shuttle/Views/Home/EntryCreate.cshtml]

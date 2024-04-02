@@ -84,29 +84,15 @@ namespace Bus_Shuttle.Middleware
                         {
                             Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");
                         }
-
-
-                        
                         return;
                     }
 
                     if (user is { IsDriver: true, IsAuthorizedDriver: false })
                     {
-                        Console.WriteLine("Is driver but not authorized");
-                        var claims = new[]
-                        {
-                            new Claim(ClaimTypes.Name, username),
-                        };
-                        
-                        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-
-                        var authProperties = new AuthenticationProperties
-                        {
-                            IsPersistent = true
-                        };
-                        await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
                         context.Response.Redirect("/Home/DriverNotAuthorized");
+                        Console.WriteLine("Is driver but not authorized");
                     }
+                    
                 }
 
                 if (user == null)

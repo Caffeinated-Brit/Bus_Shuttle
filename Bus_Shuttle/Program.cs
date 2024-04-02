@@ -68,7 +68,6 @@ public class Program
 
         
         app.UseRouting();
-        //app.UseMiddleware<MyAuthentication>();
         app.UseAuthentication();
         app.UseMiddleware<MyAuthentication>();
         app.UseAuthorization();

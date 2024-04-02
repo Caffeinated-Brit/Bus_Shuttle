@@ -18,7 +18,10 @@
 <body>
 
     <h1>Access Denied</h1>
-    <p>You do not have permissions to access this resource</p>
+<p>You do not have permissions to access this resource</p>
+<form method="post" asp-action="Logout" class="d-inline">
+                <button type="submit" class="btn btn-danger">Logout</button>
+                @Html.AntiForgeryToken() </form>
     
 </body>
 </html>

@@ -17,25 +17,32 @@ namespace Bus_Shuttle.Service
         }
         public List<DomainModel.DomainModel.Route> GetRoutes()
         {
-            var routeList = _busDb.Route.Select(r => new DomainModel.DomainModel.Route(r.Id, r.Order)).ToList();
+            var routeList = _busDb.Route.Select(r => new DomainModel.DomainModel.Route(r.Id, r.Order, r.StopId, r.LoopId)).ToList();
             return routeList;
         }
 
         public void UpdateRouteByID(int id, int order)
         {
+            Console.Write("id: " + id);
+            Console.Write("order: " + order);
             var route = _busDb.Route.FirstOrDefault(r => r.Id == id);
             if (route != null)
             {
                 route.Order = order;
+                
                 _busDb.SaveChanges();
 
             }
         }
-        public void CreateRoute(int order)
+        
+        public void CreateRoute(int order, int stopId, int loopId)
         {
             var newRoute = new Database.Route
             {
-                Order = order
+                Order = order,
+                StopId = stopId,
+                LoopId = loopId,
+
             };
             _busDb.Route.Add(newRoute);
             _busDb.SaveChanges();
@@ -46,7 +53,7 @@ namespace Bus_Shuttle.Service
             var route = _busDb.Route.FirstOrDefault(r => r.Id == id);
             if (route != null)
             {
-                return new DomainModel.DomainModel.Route(route.Id, route.Order);
+                return new DomainModel.DomainModel.Route(route.Id, route.Order, route.StopId, route.LoopId);
             }
             return null;
         }

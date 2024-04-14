@@ -14,10 +14,11 @@ namespace Bus_Shuttle.Service
         {
             _busDb = busDb;
         }
-        public List<DomainModel.DomainModel.Bus> GetBusses()
+        public List<DomainModel.DomainModel.Bus> GetBuses()
         {
             var busList = _busDb.Bus.Select(b => new DomainModel.DomainModel.Bus(b.Id, b.BusNumber)).ToList();
             return busList;
+            
         }
 
         public void UpdateBusByID(int id, int busNumber)

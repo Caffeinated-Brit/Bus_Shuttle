@@ -16,8 +16,7 @@ public class Program
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-
-        // Add services to the container.
+        
         builder.Services.AddControllersWithViews();
 
         builder.Services.AddDbContext<BusDb>(Options => Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));

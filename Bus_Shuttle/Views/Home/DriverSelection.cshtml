@@ -1,0 +1,34 @@
+@model Bus_Shuttle.Models.DriverSelectionViewModel
+
+<h2>Select Loop and Bus</h2>
+
+@if (Model.Loops.Any() && Model.Buses.Any())
+{
+    <form method="post" asp-action="DriverSelection">
+        <div class="form-group">
+            <label for="loop">Select Loop:</label>
+            <select class="form-control" id="loop" name="loopId">
+                @foreach (var loop in Model.Loops)
+                {
+                    <option value="@loop.Id">@loop.Name</option>
+                }
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="bus">Select Bus:</label>
+            <select class="form-control" id="bus" name="busId">
+                @foreach (var bus in Model.Buses)
+                {
+                    <option value="@bus.Id">@bus.BusNumber</option>
+                }
+            </select>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Next</button>
+    </form>
+}
+else
+{
+    <p>No loops or buses available.</p>
+}

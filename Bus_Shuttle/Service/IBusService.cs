@@ -3,7 +3,7 @@ namespace Bus_Shuttle.Service;
 
 public interface IBusService
 {
-    List<DomainModel.DomainModel.Bus> GetBusses();
+    List<DomainModel.DomainModel.Bus> GetBuses();
     void UpdateBusByID(int id, int busNumber);
     void CreateBus(int busNumber);
 

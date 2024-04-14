@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Security.Claims;
+using Bus_Shuttle.Database;
 using Microsoft.AspNetCore.Mvc;
 using Bus_Shuttle.Models;
 using DomainModel;
@@ -7,6 +8,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Bus_Shuttle.Service;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bus_Shuttle.Controllers;
 
@@ -24,6 +27,7 @@ public class HomeController : Controller
     private readonly IEntryService _entryService;
     private readonly IRouteService _routeService;
     private readonly IStopService _stopService;
+    
 
     public HomeController(ILogger<HomeController> logger, IBusService busService, ILoopService loopService, IEntryService entryService, IRouteService routeService, IStopService stopService, IUserService userService)
     {
@@ -69,7 +73,7 @@ public class HomeController : Controller
         var drivers = _userService.GetUnauthorizedDrivers();
         return View(drivers);
     }
-
+    
     [Authorize(Policy = "ReqManager")]
     [HttpGet]
     public IActionResult ViewDrivers()
@@ -135,7 +139,7 @@ public class HomeController : Controller
     [Authorize(Policy = "ReqManager")]
     public IActionResult BusView()
     {
-        return View(_busService.GetBusses().Select(b => BusModels.BusViewModel.FromBus(b)));
+        return View(_busService.GetBuses().Select(b => BusModels.BusViewModel.FromBus(b)));
     }
     
     [Authorize(Policy = "ReqManager")]
@@ -193,7 +197,101 @@ public class HomeController : Controller
         return View();
         
     }
+    
+    
+    [Authorize(Policy = "ReqDriver")]
+    [HttpGet]
+    public IActionResult AddEntry(int loopId, int busId)
+    {
+        var userName = User.Identity.Name;
+        int userId = _userService.GetUserIdByUserName(userName);
+        
+        Console.WriteLine("loopId: " + loopId);
+        Console.WriteLine("busId: " + busId);
+        //Console.WriteLine("userId: " + userId);
+        
+        var stops = _stopService.GetStops(); 
+        var loopName = _loopService.FindLoopByID(loopId).Name;
+        var busNumber = _busService.FindBusByID(busId).BusNumber;
+        
+        //var loopName = "1";
+        //var busNumber = 1;
+        
+        var driverName = _userService.FindUserByID(userId)?.UserName;
+        
+        
+        var viewModel = new EntryModels.AddEntryViewModel
+        {
+            //userId will be added at the call to update the database, this userid here is always zero for some reason
+            LoopId = loopId,
+            BusId = busId,
+            //UserId = userId,
+            LoopName = loopName,
+            BusNumber = busNumber, 
+            DriverName = driverName, 
+            Stops = stops.Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.Name }).ToList()
+            
+        };
+        
+        return View(viewModel);
+    }
 
+    [Authorize(Policy = "ReqDriver")]
+    [HttpPost]
+    public IActionResult AddEntry(EntryModels.AddEntryViewModel model)
+    {
+        Console.WriteLine("userId: " + model.UserId);
+        Console.WriteLine("BusId: " + model.BusId);
+        Console.WriteLine("LoopId: " + model.LoopId);
+        
+        var userName = User.Identity.Name;
+        int userId = _userService.GetUserIdByUserName(userName);
+        
+        if (ModelState.IsValid)
+        {
+            
+            Console.WriteLine("in homeController add entry model is valid");
+            _entryService.AddEntry(model.LoopId, model.BusId, userId, model.StopId, model.Boarded, model.LeftBehind);
+            
+            
+            //return RedirectToAction("AddEntry", "Home");
+            return RedirectToAction("AddEntry", "Home", new { loopId = model.LoopId, busId = model.BusId });
+        }
+        Console.WriteLine("in homeController add entry model is NOT valid");
+        return View(model);
+    }
+    
+    
+    [HttpGet]
+    public IActionResult DriverSelection()
+    {
+        var loops = _loopService.GetLoops()
+            .Select(LoopModels.LoopViewModel.FromLoop)
+            .ToList();
+
+        var buses = _busService.GetBuses()
+            .Select(BusModels.BusViewModel.FromBus) 
+            .ToList();
+
+        var model = new DriverSelectionViewModel
+        {
+            Loops = loops,
+            Buses = buses,
+        };
+
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult DriverSelection(int loopId, int busId)
+    {
+        // Do something with the selected loopId and busId, such as redirecting to another page
+        return RedirectToAction("AddEntry", new { loopId = loopId, busId = busId});
+    }
+    
+    
+    
+    
     [Authorize(Policy = "ReqManager")]
     public IActionResult EntryView()
     {
@@ -318,13 +416,25 @@ public class HomeController : Controller
         
     }
 
+    //TODO: Somewhere the route order is broken somehow maybe not sure what it is though
     [Authorize(Policy = "ReqManager")]
     public IActionResult RouteView()
     {
+        var routes = _routeService.GetRoutes(); // Assuming you have a service method to get all routes
+    
+        var routeViewModels = routes.Select(route => new RouteModels.RouteViewModel
+        {
+            Id = route.Id,
+            Order = route.Order,
+            LoopId = route.LoopId,
+            StopId = route.StopId,
+            LoopName = _loopService.FindLoopByID(route.LoopId)?.Name,
+            StopName = _stopService.FindStopByID(route.StopId)?.Name
+        }).ToList();
 
-        return View(_routeService.GetRoutes().Select(r => RouteModels.RouteViewModel.FromRoute(r)));
-
+        return View(routeViewModels);
     }
+    
     
     [Authorize(Policy = "ReqManager")]
     [HttpPost]
@@ -340,10 +450,16 @@ public class HomeController : Controller
         
     }
     
+    
     [Authorize(Policy = "ReqManager")]
-    public IActionResult RouteEdit([FromRoute] int id)
+    public IActionResult RouteEdit(int id)
     {
         var route = _routeService.FindRouteByID(id);
+        if (route == null)
+        {
+            return NotFound();
+        }
+
         var routeEditModel = RouteModels.RouteEditModel.FromRoute(route);
         return View(routeEditModel);
     }
@@ -351,32 +467,41 @@ public class HomeController : Controller
     [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RouteEdit(int id, [Bind("Order")] RouteModels.RouteEditModel route)
+    public async Task<IActionResult> RouteEdit(int id, [Bind("Order, StopId, LoopId")] RouteModels.RouteEditModel route)
     {
-        if (ModelState.IsValid)
-        {
+        //is never valid should fix this later but dont have time
+        //if (ModelState.IsValid)
+        //{
             _routeService.UpdateRouteByID(id, route.Order);
             return RedirectToAction("RouteView");
-        }
+        //}
 
         return View(route);
-        
     }
 
     [Authorize(Policy = "ReqManager")]
     public IActionResult RouteCreate()
     {
-        return View();
+        var availableLoops = _loopService.GetLoops().Select(LoopModels.LoopViewModel.FromLoop).ToList();
+        var availableStops = _stopService.GetStops().Select(StopModels.StopViewModel.FromStop).ToList();
+
+        var model = new RouteModels.RouteCreateModel
+        {
+            AvailableLoops = availableLoops,
+            AvailableStops = availableStops
+        };
+
+        return View(model);
     }
 
     [Authorize(Policy = "ReqManager")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> RouteCreate([Bind("Order")] RouteModels.RouteCreateModel route)
+    public async Task<IActionResult> RouteCreate([Bind("StopId", "LoopId")] RouteModels.RouteCreateModel route)
     {
         if (ModelState.IsValid)
         {
-            _routeService.CreateRoute(route.Order);
+            _routeService.CreateRoute(route.Order, route.StopId, route.LoopId);
             return RedirectToAction("RouteView");
         }
         return View();

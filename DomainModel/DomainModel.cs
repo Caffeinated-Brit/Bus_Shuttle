@@ -63,16 +63,24 @@ public class DomainModel
     {
         public int Id { get; set; }
         public int Order { get; set; }
+        public int StopId { get; set; }
+        public Stop Stop { get; set; }
+        public int LoopId { get; set; }
+        public Loop Loop { get; set; }
 
-        public Route(int id, int order)
+        public Route(int id, int order, int stopId, int loopId)
         {
             Id = id;
             Order = order;
+            StopId = stopId;
+            LoopId = loopId;
         }
 
-        public void Update(int order)
+        public void Update(int order, int stopId, int loopId)
         {
             Order = order;
+            StopId = stopId;
+            LoopId = loopId;
         }
     }
     

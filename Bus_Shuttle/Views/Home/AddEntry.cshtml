@@ -1,0 +1,77 @@
+@model Bus_Shuttle.Models.EntryModels.AddEntryViewModel
+@inject Bus_Shuttle.Service.IUserService UserService
+
+@{
+    int userId = UserService.GetUserIdByUserName(User.Identity.Name);
+}
+
+<h2>Add Entry</h2>
+
+<form id="entryForm" method="post" asp-action="AddEntry" onsubmit="submitForm(event)">
+    <div class="form-group">
+        <label for="loop">Loop:</label>
+        <input type="text" class="form-control" id="loop" value="@Model.LoopId" readonly>
+        <input type="hidden" name="loopId" value="@Model.LoopId">
+    </div>
+    
+    <div class="form-group">
+        <label for="bus">Bus:</label>
+        <input type="text" class="form-control" id="bus" value="@Model.BusId" readonly>
+        <input type="hidden" name="busId" value="@Model.BusId">
+    </div>
+    
+    <div class="form-group">
+        <label for="driver">Driver:</label>
+        <input type="text" class="form-control" id="driver" value="@userId" readonly>
+        <input type="hidden" name="driverId" value="@userId">
+    </div>
+    
+    <div class="form-group">
+        <label for="stop">Select Stop:</label>
+        <select class="form-control" id="stop" name="stopId">
+            @if (Model.Stops != null)
+            {
+                @foreach (var stop in Model.Stops)
+                {
+                    <option value="@stop.Value">@stop.Text</option>
+                }
+            }
+        </select>
+    </div>
+    
+    <div class="form-group">
+        <label for="boarded">Boarded:</label>
+        <input type="number" class="form-control" id="boarded" name="boarded">
+    </div>
+    
+    <div class="form-group">
+        <label for="leftBehind">Left Behind:</label>
+        <input type="number" class="form-control" id="leftBehind" name="leftBehind">
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<script>
+function submitForm(event) {
+        event.preventDefault();
+        var formData = $("#entryForm").serialize(); 
+        
+        $.ajax({
+            type: "POST",
+            url: $("#entryForm").attr("action"),
+            data: formData,
+            success: function(response) {
+                var selectedStop = $("#stop").val();
+                var nextStopIndex = ($("#stop option:selected").index() + 1) % $("#stop option").length;
+                $("#stop").val($("#stop option").eq(nextStopIndex).val());
+                
+                $("#boarded").val('');
+                $("#leftBehind").val('');
+            },
+            error: function(xhr, status, error) {
+               
+            }
+        });
+    }
+</script>

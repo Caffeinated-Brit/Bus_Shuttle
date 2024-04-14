@@ -3,32 +3,43 @@
     ViewData["Title"] = "Route List";
 }
 <h2>Route List</h2>
+<a asp-action="Index">Back to List</a>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Order)
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            Order
+        </th>
+        <th>
+            Loop Name
+        </th>
+        <th>
+            Stop Name
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Order)
-                </td>
-                <td>
-                    <a asp-action="RouteEdit" asp-route-id="@item.Id">Edit</a> | <form asp-action="RouteDelete"
-                        asp-route-id="@item.Id" method="post" style="display:inline">
-                        <button type="submit" class="btn btn-danger"
-                            onclick="return confirm('Are you sure you want to delete this?');">Delete</button>
-                    </form>
-                </td>
-
-            </tr>
-        }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Order
+            </td>
+            <td>
+                @item.LoopName
+            </td>
+            <td>
+                @item.StopName
+            </td>
+            <td>
+                <a asp-action="RouteEdit" asp-route-id="@item.Id">Edit</a> | 
+                <form asp-action="RouteDelete" asp-route-id="@item.Id" method="post" style="display:inline">
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this?');">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
 <a asp-action="RouteCreate">Create a new Route</a>

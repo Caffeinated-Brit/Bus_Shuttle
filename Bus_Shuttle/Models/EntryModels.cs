@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
+
 namespace Bus_Shuttle.Models;
 
 public class EntryModels
@@ -44,10 +46,25 @@ public class EntryModels
     public class EntryCreateModel
     {
         public int Id { get; set; }
-
         public DateTime TimeStamp { get; set; }
         public int Boarded { get; set; }
         public int LeftBehind { get; set; }
+    }
+    
+    public class AddEntryViewModel
+    {
+        public int LoopId { get; set; }
+        public int BusId { get; set; }
+        public int UserId { get; set; }
+        public int StopId { get; set; }
+        public int Boarded { get; set; }
+        public int LeftBehind { get; set; }
+        public int BusNumber { get; set; }
+        public String? LoopName { get; set; }
+        
+        public String? DriverName { get; set; }
+        
+        public List<SelectListItem>? Stops { get; set; }
     }
     
 }

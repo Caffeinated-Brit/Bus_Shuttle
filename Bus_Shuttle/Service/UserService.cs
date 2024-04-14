@@ -82,6 +82,11 @@ namespace Bus_Shuttle.Service
 
         }
         
+        public int GetUserIdByUserName(string userName)
+        {
+            var user = _busDb.User.FirstOrDefault(u => u.UserName == userName);
+            return user.Id;
+        }
         public DomainModel.DomainModel.User? FindUserByID(int id)
         {
             var user = _busDb.User.FirstOrDefault(u => u.Id == id);

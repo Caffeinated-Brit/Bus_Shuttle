@@ -76,10 +76,11 @@ namespace Bus_Shuttle.Middleware
                             IsPersistent = true
                         };
                         await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
-                        context.Response.Redirect("/Home/DriverTempPage");
+                        //context.Response.Redirect("/Home/DriverTempPage");
+                        context.Response.Redirect("/Home/DriverSelection");
                         
                         
-                        
+                        //logging
                         foreach (var claim in identity.Claims)
                         {
                             Console.WriteLine($"Claim: {claim.Type}, Value: {claim.Value}");

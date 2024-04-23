@@ -42,23 +42,25 @@ public class HomeController : Controller
     
     
     [Authorize(Policy = "ReqManager")]
+    [HttpGet]
     public IActionResult Index()
     {
         return View();
     }
     
     [Authorize(Policy = "ReqDriver")]
+    [HttpGet]
     public IActionResult DriverTempPage()
     {
         return View();
     }
     
+    [AllowAnonymous]
     [HttpGet]
     public IActionResult AccessDenied()
     {
         return View();
     }
-    
     
     [HttpGet]
     [AllowAnonymous]
@@ -68,6 +70,7 @@ public class HomeController : Controller
     }
 
     [Authorize(Policy = "ReqManager")]
+    [HttpGet]
     public IActionResult AuthDrivers()
     {
         var drivers = _userService.GetUnauthorizedDrivers();
@@ -97,11 +100,6 @@ public class HomeController : Controller
             FirstName = user.FirstName,
             LastName = user.LastName,
             UserName = user.UserName,
-            //Password = user.Password,
-            //IsManager = user.IsManager,
-            //IsDriver = user.IsDriver,
-            //IsAuthorizedDriver = user.IsAuthorizedDriver
-            
         };
 
         return View(model);
@@ -121,10 +119,7 @@ public class HomeController : Controller
     [ValidateAntiForgeryToken]
     public IActionResult DeleteDriver(int id)
     {
-        // Call the service method to delete the user
         _userService.DeleteUserById(id);
-    
-        // Redirect back to the ViewDrivers page
         return RedirectToAction("ViewDrivers");
     }
     
@@ -135,6 +130,28 @@ public class HomeController : Controller
         _userService.SetAuthorized(userId);
         return RedirectToAction("AuthDrivers");
     }
+    
+    
+    [Authorize(Policy = "ReqManager")]
+    [HttpGet]
+    public IActionResult Reports()
+    {
+        var routes = _routeService.GetRoutes();
+        var buses = _busService.GetBuses();
+        var stops = _stopService.GetStops();
+        var entryReports = _entryService.GetEntries();
+
+        var viewModel = new ReportsModel()
+        {
+            Routes = routes,
+            Buses = buses,
+            Stops = stops,
+            EntryReport = entryReports
+        };
+        return View(viewModel);
+    }
+    
+    
     
     [Authorize(Policy = "ReqManager")]
     public IActionResult BusView()
@@ -208,14 +225,12 @@ public class HomeController : Controller
         
         Console.WriteLine("loopId: " + loopId);
         Console.WriteLine("busId: " + busId);
-        //Console.WriteLine("userId: " + userId);
+        
         
         var stops = _stopService.GetStops(); 
         var loopName = _loopService.FindLoopByID(loopId).Name;
         var busNumber = _busService.FindBusByID(busId).BusNumber;
         
-        //var loopName = "1";
-        //var busNumber = 1;
         
         var driverName = _userService.FindUserByID(userId)?.UserName;
         
@@ -250,18 +265,18 @@ public class HomeController : Controller
         if (ModelState.IsValid)
         {
             
-            Console.WriteLine("in homeController add entry model is valid");
+            //Console.WriteLine("in homeController add entry model is valid");
             _entryService.AddEntry(model.LoopId, model.BusId, userId, model.StopId, model.Boarded, model.LeftBehind);
             
             
             //return RedirectToAction("AddEntry", "Home");
             return RedirectToAction("AddEntry", "Home", new { loopId = model.LoopId, busId = model.BusId });
         }
-        Console.WriteLine("in homeController add entry model is NOT valid");
+        //Console.WriteLine("in homeController add entry model is NOT valid");
         return View(model);
     }
     
-    
+    [Authorize(Policy = "ReqDriver")]
     [HttpGet]
     public IActionResult DriverSelection()
     {
@@ -282,10 +297,10 @@ public class HomeController : Controller
         return View(model);
     }
 
+    [Authorize(Policy = "ReqDriver")]
     [HttpPost]
     public IActionResult DriverSelection(int loopId, int busId)
     {
-        // Do something with the selected loopId and busId, such as redirecting to another page
         return RedirectToAction("AddEntry", new { loopId = loopId, busId = busId});
     }
     
@@ -295,9 +310,7 @@ public class HomeController : Controller
     [Authorize(Policy = "ReqManager")]
     public IActionResult EntryView()
     {
-
         return View(_entryService.GetEntries().Select(e => EntryModels.EntryViewModel.FromEntry(e)));
-
     }
 
     [Authorize(Policy = "ReqManager")]
@@ -415,12 +428,11 @@ public class HomeController : Controller
         return View();
         
     }
-
-    //TODO: Somewhere the route order is broken somehow maybe not sure what it is though
+    
     [Authorize(Policy = "ReqManager")]
     public IActionResult RouteView()
     {
-        var routes = _routeService.GetRoutes(); // Assuming you have a service method to get all routes
+        var routes = _routeService.GetRoutes(); 
     
         var routeViewModels = routes.Select(route => new RouteModels.RouteViewModel
         {
@@ -577,7 +589,7 @@ public class HomeController : Controller
         return View();
     }
 
-    
+    [AllowAnonymous]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Logout()

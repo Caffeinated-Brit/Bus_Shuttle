@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bus_Shuttle.Controllers;
 using DomainModel;
 using Microsoft.VisualBasic;
 using Bus_Shuttle.Database;
@@ -11,16 +12,19 @@ namespace Bus_Shuttle.Service
     public class EntryService : IEntryService
     {
         private readonly BusDb _busDb;
+        private readonly ILogger<HomeController> _logger;
 
-        public EntryService(BusDb busDb)
+        public EntryService(BusDb busDb, ILogger<HomeController> logger)
         {
             _busDb = busDb;
+            _logger = logger;
         }
         public List<DomainModel.DomainModel.Entry> GetEntries()
         {
             var entryList = _busDb.Entry.Select(e => new DomainModel.DomainModel.Entry(e.Id, e.TimeStamp, e.Boarded, e.LeftBehind)).ToList();
             return entryList;
         }
+        
         
         public void AddEntry(int loopId, int busId, int userId, int stopId, int boarded, int leftBehind)
         {
@@ -35,29 +39,11 @@ namespace Bus_Shuttle.Service
                 TimeStamp = DateTime.Now,
                 UserId = userId,
             };
-            
-            /*
-            var entry = new Entry
-            {
-                Boarded = 123,
-                BusId = 1,
-                LeftBehind = 41,
-                LoopId = 2,
-                StopId = 1,
-                TimeStamp = DateTime.Now,
-                UserId = 1,
-            };
-            */
-            Console.WriteLine("Timestamp: " + entry.TimeStamp);
-            Console.WriteLine("LoopId: " + entry.LoopId);
-            Console.WriteLine("BusId: " + entry.BusId);
-            Console.WriteLine("UserId: " + entry.UserId);
-            Console.WriteLine("StopId: " + entry.StopId);
-            Console.WriteLine("Boarded: " + entry.Boarded);
-            Console.WriteLine("LeftBehind: " + entry.LeftBehind);
-
             _busDb.Entry.Add(entry);
             _busDb.SaveChanges();
+            
+            _logger.LogInformation("Entry added successfully: LoopId {LoopId}, BusId {BusId}, StopId {StopId}, Boarded {Boarded}, LeftBehind {LeftBehind}, UserId {UserId}", 
+                loopId, busId, stopId, boarded, leftBehind, userId);
         }
         
 
@@ -70,7 +56,9 @@ namespace Bus_Shuttle.Service
                 entry.Boarded = boarded;
                 entry.LeftBehind = leftBehind;
                 _busDb.SaveChanges();
-
+                
+                _logger.LogInformation("Entry updated successfully: Id {Id}, TimeStamp {TimeStamp}, Boarded {Boarded}, LeftBehind {LeftBehind}", 
+                    id, timeStamp, boarded, leftBehind);
             }
         }
         public void CreateEntry(DateTime timeStamp, int boarded, int leftBehind)
@@ -83,7 +71,9 @@ namespace Bus_Shuttle.Service
             };
             _busDb.Entry.Add(newEntry);
             _busDb.SaveChanges();
-
+            
+            _logger.LogInformation("New entry created successfully: TimeStamp {TimeStamp}, Boarded {Boarded}, LeftBehind {LeftBehind}", 
+                timeStamp, boarded, leftBehind);
         }
 
         public DomainModel.DomainModel.Entry? FindEntryByID(int id)
@@ -102,6 +92,11 @@ namespace Bus_Shuttle.Service
             {
                 _busDb.Entry.Remove(entry);
                 _busDb.SaveChanges();
+                _logger.LogInformation("Entry deleted successfully: ID {EntryId}", id);
+            }
+            else
+            {
+                _logger.LogWarning("Entry with ID {EntryId} not found. No entry was deleted.", id);
             }
         }
     }

@@ -16,13 +16,12 @@
                 <a class="btn btn-primary" asp-action="StopView">Stops</a>
                 <a class="btn btn-primary" asp-action="ViewDrivers">Drivers</a>
                 <a class="btn btn-primary" asp-action="AuthDrivers">Authorize Drivers</a>
+                <a class="btn btn-primary" asp-action="Reports">Reports</a>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-12 text-right">
-            <a class="btn btn-success mr-2" asp-action="LoginView">Login</a>
-            <a class="btn btn-success mr-2" asp-action="SignUpView">Register</a>
             <form method="post" asp-action="Logout" class="d-inline">
                 <button type="submit" class="btn btn-danger">Logout</button>
                 @Html.AntiForgeryToken() 

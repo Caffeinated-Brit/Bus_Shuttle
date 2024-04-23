@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Bus_Shuttle.Controllers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Bus_Shuttle.Database;
@@ -13,8 +14,9 @@ namespace Bus_Shuttle.Middleware
     {
         
         private readonly RequestDelegate _next;
+        private readonly ILogger<HomeController> _logger;
 
-        public MyAuthentication(RequestDelegate next)
+        public MyAuthentication(RequestDelegate next, ILogger<HomeController> logger)
         {
             _next = next;
         }
@@ -76,7 +78,6 @@ namespace Bus_Shuttle.Middleware
                             IsPersistent = true
                         };
                         await context.SignInAsync("Cookies", new ClaimsPrincipal(identity), authProperties);
-                        //context.Response.Redirect("/Home/DriverTempPage");
                         context.Response.Redirect("/Home/DriverSelection");
                         
                         

@@ -10,4 +10,6 @@ public interface IEntryService
     DomainModel.DomainModel.Entry? FindEntryByID(int id);
     void DeleteEntry(int id);
     void AddEntry(int loopId, int busId, int userId, int stopId, int boarded, int leftBehind);
+    
+    
 }

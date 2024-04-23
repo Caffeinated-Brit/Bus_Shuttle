@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bus_Shuttle.Controllers;
 using DomainModel;
 using Microsoft.VisualBasic;
 using Bus_Shuttle.Database;
@@ -9,10 +10,12 @@ namespace Bus_Shuttle.Service
     public class StopService : IStopService
     {
         private readonly BusDb _busDb;
+        private readonly ILogger<HomeController> _logger;
 
-        public StopService(BusDb busDb)
+        public StopService(BusDb busDb, ILogger<HomeController> logger)
         {
             _busDb = busDb;
+            _logger = logger;
         }
         public List<DomainModel.DomainModel.Stop> GetStops()
         {
@@ -29,7 +32,11 @@ namespace Bus_Shuttle.Service
                 stop.Latitude = latitude;
                 stop.Longitude = longitude;
                 _busDb.SaveChanges();
-
+                _logger.LogInformation("Stop with ID {StopId} updated successfully", id);
+            }
+            else
+            {
+                _logger.LogWarning("Stop with ID {StopId} not found for updating", id);
             }
         }
 
@@ -43,7 +50,7 @@ namespace Bus_Shuttle.Service
             };
             _busDb.Stop.Add(newStop);
             _busDb.SaveChanges();
-
+            _logger.LogInformation("Stop created successfully with ID {StopId}", newStop.Id);
         }
 
         public DomainModel.DomainModel.Stop? FindStopByID(int id)
@@ -62,6 +69,11 @@ namespace Bus_Shuttle.Service
             {
                 _busDb.Stop.Remove(stop);
                 _busDb.SaveChanges();
+                _logger.LogInformation("Stop with ID {StopId} deleted successfully", id);
+            }
+            else
+            {
+                _logger.LogWarning("Stop with ID {StopId} not found", id);
             }
         }
     }

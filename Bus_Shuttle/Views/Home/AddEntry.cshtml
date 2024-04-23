@@ -39,21 +39,51 @@
         </select>
     </div>
     
-    <div class="form-group">
-        <label for="boarded">Boarded:</label>
-        <input type="number" class="form-control" id="boarded" name="boarded">
+<div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <label for="boarded">Boarded:</label>
+            <div class="input-group">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button" onclick="decrementBoarded()">-</button>
+                </div>
+                <input type="number" class="form-control form-control-lg" id="boarded" name="boarded" value="0">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button" onclick="incrementBoarded()">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="leftBehind">Left Behind:</label>
+            <div class="input-group">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button" onclick="decrementLeftBehind()">-</button>
+                </div>
+                <input type="number" class="form-control form-control-lg" id="leftBehind" name="leftBehind" value="0">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary btn-lg" type="button" onclick="incrementLeftBehind()">+</button>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <div class="form-group">
-        <label for="leftBehind">Left Behind:</label>
-        <input type="number" class="form-control" id="leftBehind" name="leftBehind">
-    </div>
+    <div class="col-md-2"></div>
+</div>
     
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
+<div style="margin-top: 20pc;">
+    <form method="post" asp-action="Logout" class="d-inline">
+        <button type="submit" class="btn btn-danger">Logout</button>
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+
+
 <script>
-function submitForm(event) {
+    function submitForm(event) {
         event.preventDefault();
         var formData = $("#entryForm").serialize(); 
         
@@ -66,12 +96,35 @@ function submitForm(event) {
                 var nextStopIndex = ($("#stop option:selected").index() + 1) % $("#stop option").length;
                 $("#stop").val($("#stop option").eq(nextStopIndex).val());
                 
-                $("#boarded").val('');
-                $("#leftBehind").val('');
+                $("#boarded").val('0');
+                $("#leftBehind").val('0');
             },
             error: function(xhr, status, error) {
-               
             }
         });
+    }
+    
+    function incrementBoarded() {
+        var boardedInput = document.getElementById("boarded");
+        boardedInput.value = parseInt(boardedInput.value) + 1;
+    }
+    
+    function decrementBoarded() {
+        var boardedInput = document.getElementById("boarded");
+        if (parseInt(boardedInput.value) > 0) {
+            boardedInput.value = parseInt(boardedInput.value) - 1;
+        }
+    }
+    
+    function incrementLeftBehind() {
+        var leftBehindInput = document.getElementById("leftBehind");
+        leftBehindInput.value = parseInt(leftBehindInput.value) + 1;
+    }
+    
+    function decrementLeftBehind() {
+        var leftBehindInput = document.getElementById("leftBehind");
+        if (parseInt(leftBehindInput.value) > 0) {
+            leftBehindInput.value = parseInt(leftBehindInput.value) - 1;
+        }
     }
 </script>

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Bus_Shuttle.Controllers;
 using DomainModel;
 using Microsoft.VisualBasic;
 using Bus_Shuttle.Database;
@@ -9,10 +10,12 @@ namespace Bus_Shuttle.Service
     public class UserService : IUserService
     {
         private readonly BusDb _busDb;
+        private readonly ILogger<HomeController> _logger;
 
-        public UserService(BusDb busDb)
+        public UserService(BusDb busDb, ILogger<HomeController> logger)
         {
             _busDb = busDb;
+            _logger = logger;
         }
         public List<DomainModel.DomainModel.User> GetUsers()
         {
@@ -35,6 +38,11 @@ namespace Bus_Shuttle.Service
             {
                 user.IsAuthorizedDriver = true;
                 _busDb.SaveChanges();
+                _logger.LogInformation("User with ID {UserId} set as authorized driver successfully", userId);
+            }
+            else
+            {
+                _logger.LogWarning("User with ID {UserId} not found", userId);
             }
         }
         
@@ -49,7 +57,7 @@ namespace Bus_Shuttle.Service
 
         public void CreateUser(string firstname, string lastname, string userName, string password)
         {
-            var newUser = new Database.User
+            var newUser = new User
             {
                 FirstName = firstname,
                 LastName = lastname,
@@ -63,23 +71,21 @@ namespace Bus_Shuttle.Service
             _busDb.SaveChanges();
             
             int newUserId = newUser.Id;
-            Console.WriteLine("NewUser Id: " + newUserId);
+            _logger.LogInformation("New user created with ID: {UserId}", newUserId);
             
             if (newUser.Id == 1)
             {
                 newUser.IsManager = true;
                 newUser.IsDriver = false; 
+                _logger.LogInformation("User set as Manager");
             }
             else
             {
                 newUser.IsManager = false;
                 newUser.IsDriver = true;
+                _logger.LogInformation("User set as Driver");
             }
-            
             _busDb.SaveChanges();
-            
-            
-
         }
         
         public int GetUserIdByUserName(string userName)
@@ -116,11 +122,12 @@ namespace Bus_Shuttle.Service
                 user.FirstName = firstname;
                 user.LastName = lastname;
                 user.UserName = userName;
-                //user.Password = password;
-                //user.IsManager = isManager;
-                //user.IsDriver = isDriver;
-                //user.IsAuthorizedDriver = isAuthorizedDriver;
                 _busDb.SaveChanges();
+                _logger.LogInformation("User: {FirstName} {LastName} ({UserName}) updated successfully", user.FirstName, user.LastName, user.UserName);
+            }
+            else
+            {
+                _logger.LogWarning("User with ID {UserId} not found", userId);
             }
         }
         
@@ -131,6 +138,7 @@ namespace Bus_Shuttle.Service
             {
                 _busDb.User.Remove(user);
                 _busDb.SaveChanges();
+                _logger.LogInformation("User with ID: {UserId} deleted successfully", userId);
             }
         }
     }

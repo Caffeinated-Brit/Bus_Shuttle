@@ -1,0 +1,139 @@
+@model Bus_Shuttle.Models.ReportsModel
+
+
+<h2>Reports</h2>
+
+<h3>Routes</h3>
+
+    @if (Model?.Routes != null && Model.Routes.Any())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Route ID</th>
+                <th>Order</th>
+                <th>Total Stops</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var route in Model.Routes)
+            {
+                <tr>
+                    <td>@route.Id</td>
+                    <td>@route.Order</td>
+                    <td>@route.LoopId</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No routes found.</p>
+    }
+
+    <h3>Buses</h3>
+    @if (Model?.Buses != null && Model.Buses.Any())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Bus ID</th>
+                <th>Bus Number</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var bus in Model.Buses)
+            {
+                <tr>
+                    <td>@bus.Id</td>
+                    <td>@bus.BusNumber</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No buses found.</p>
+    }
+
+    <h3>Stops</h3>
+    @if (Model?.Stops != null && Model.Stops.Any())
+    {
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Stop ID</th>
+                <th>Stop Name</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var stop in Model.Stops)
+            {
+                <tr>
+                    <td>@stop.Id</td>
+                    <td>@stop.Name</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+<h2>Entry Reports</h2>
+@if (Model?.EntryReport != null && Model.EntryReport.Count > 0)
+{
+    var latestEntries = Model.EntryReport.OrderByDescending(e => e.TimeStamp).Take(100);
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>TimeStamp</th>
+                <th>Boarded</th>
+                <th>Left Behind</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entryReport in latestEntries)
+            {
+                <tr>
+                    <td>@entryReport.Id</td>
+                    <td>@entryReport.TimeStamp</td>
+                    <td>@entryReport.Boarded</td>
+                    <td>@entryReport.LeftBehind</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No entry reports found.</p>
+}
+
+<button onclick="downloadCSV()">Download CSV</button>
+
+<script>
+    function downloadCSV() {
+        
+        var table = document.querySelector('table');
+        var rows = table.querySelectorAll('tr');
+        
+        var csvContent = "data:text/csv;charset=utf-8,";
+        rows.forEach(function(row) {
+            var rowData = [];
+            var cols = row.querySelectorAll('td, th');
+            cols.forEach(function(col) {
+                rowData.push(col.innerText);
+            });
+            csvContent += rowData.join(',') + "\n";
+        });
+       
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "report.csv");
+        document.body.appendChild(link);
+        link.click();
+    }
+</script>

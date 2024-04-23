@@ -582,7 +582,6 @@ public class HomeController : Controller
     
     
     [AllowAnonymous]
-    [HttpGet]
     public IActionResult LoginView()
     
     {

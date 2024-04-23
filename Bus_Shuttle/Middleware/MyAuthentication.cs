@@ -42,6 +42,11 @@ namespace Bus_Shuttle.Middleware
                 Console.WriteLine("User Authenticated");
                 var user = dbContext.User.FirstOrDefault(u => u.UserName == username);
 
+                if (user == null)
+                {
+                    context.Response.Redirect("/Home/LoginView");
+                }
+                
                 if (user != null)
                 {
                     if (user.IsManager)
